@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADRIAN_AYSO.exe</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--green:#00ff41;--darkgreen:#00aa2b;--dimgreen:#004d13;--black:#000;--darkbg:#050d05;--panel:#0a160a;--border:#00ff4133;--gold:#ffd700;--red:#ff3333;--blue:#00cfff;}
+
+/* CRT SCANLINES */
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.15) 0px,rgba(0,0,0,0.15) 1px,transparent 1px,transparent 2px);pointer-events:none;z-index:9000;}
+/* CRT flicker */
+@keyframes flicker{0%,100%{opacity:1;}92%{opacity:1;}93%{opacity:0.96;}94%{opacity:1;}96%{opacity:0.98;}}
+html{animation:flicker 6s infinite;}
+
+body{font-family:'VT323',monospace;background:var(--darkbg);color:var(--green);overflow-x:hidden;}
+
+/* MATRIX CANVAS */
+#matrixCanvas{position:fixed;inset:0;z-index:0;opacity:0.07;pointer-events:none;}
+
+/* SCROLL BAR */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--black);}
+::-webkit-scrollbar-thumb{background:var(--green);}
+
+/* PROGRESS */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--green);z-index:8000;width:0%;box-shadow:0 0 8px var(--green);}
+
+/* NAV */
+nav{position:fixed;top:3px;left:0;right:0;z-index:5000;background:rgba(0,0,0,0.95);border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--green);text-shadow:0 0 8px var(--green);cursor:pointer;letter-spacing:1px;}
+.nav-logo span{color:var(--dimgreen);}
+.nav-links{display:flex;gap:1.5rem;}
+.nav-links a{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--darkgreen);text-decoration:none;transition:color 0.2s,text-shadow 0.2s;letter-spacing:1px;}
+.nav-links a:hover{color:var(--green);text-shadow:0 0 8px var(--green);}
+
+/* ACHIEVEMENT */
+.ach-popup{position:fixed;top:62px;right:2rem;background:#000;border:2px solid var(--green);padding:1rem;z-index:7000;transform:translateX(200%);transition:transform 0.3s;max-width:260px;image-rendering:pixelated;}
+.ach-popup::before{content:'▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓';display:block;font-size:10px;color:var(--green);margin-bottom:6px;overflow:hidden;}
+.ach-popup.show{transform:translateX(0);}
+.ach-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--gold);margin-bottom:6px;display:block;}
+.ach-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);text-shadow:0 0 6px var(--green);}
+.ach-icon{font-size:1.2rem;margin-right:8px;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:6rem 3rem 3rem;position:relative;z-index:1;}
+.hero-top{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--darkgreen);margin-bottom:2rem;letter-spacing:2px;}
+.hero-top span{color:var(--green);}
+
+.hero h1{font-family:'Press Start 2P',monospace;font-size:clamp(20px,4vw,44px);color:var(--green);text-shadow:0 0 20px var(--green),0 0 40px var(--green);line-height:1.5;margin-bottom:1rem;letter-spacing:2px;}
+.hero h1 .blink{animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.hero-sub{font-size:22px;color:var(--darkgreen);margin-bottom:2rem;max-width:600px;line-height:1.5;}
+.hero-sub .highlight{color:var(--green);}
+
+/* TERMINAL BOX */
+.terminal{background:#000;border:2px solid var(--green);padding:1.5rem;max-width:650px;margin-bottom:2.5rem;position:relative;}
+.terminal::before{content:'SYSTEM INFO // ADRIAN_AYSO.exe v1.7';font-family:'Press Start 2P',monospace;font-size:7px;color:var(--green);display:block;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.term-line{font-size:18px;line-height:1.8;color:var(--darkgreen);}
+.term-line span{color:var(--green);}
+.term-line .val{color:#fff;}
+.term-cursor{display:inline-block;width:10px;height:16px;background:var(--green);vertical-align:middle;animation:blink 0.8s step-end infinite;}
+
+/* PIXEL STATS */
+.pixel-stats{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.pstat{border:1px solid var(--border);padding:0.75rem 1.25rem;background:#000;text-align:center;}
+.pstat-num{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--green);text-shadow:0 0 8px var(--green);display:block;}
+.pstat-label{font-size:13px;color:var(--darkgreen);display:block;margin-top:4px;}
+
+/* HERO BTNS */
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.px-btn{font-family:'Press Start 2P',monospace;font-size:8px;padding:12px 20px;border:2px solid var(--green);background:#000;color:var(--green);cursor:pointer;transition:all 0.15s;letter-spacing:1px;image-rendering:pixelated;}
+.px-btn:hover{background:var(--green);color:#000;box-shadow:0 0 16px var(--green);}
+.px-btn.ghost{border-color:var(--darkgreen);color:var(--darkgreen);}
+.px-btn.ghost:hover{background:var(--darkgreen);color:#000;box-shadow:0 0 16px var(--darkgreen);}
+
+/* SECTIONS */
+.wrap{max-width:900px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+.section{padding:4rem 0;}
+.sec-label{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--darkgreen);margin-bottom:0.5rem;letter-spacing:2px;}
+.sec-label::before{content:'// ';}
+.sec-title{font-family:'Press Start 2P',monospace;font-size:clamp(14px,2.5vw,22px);color:var(--green);text-shadow:0 0 10px var(--green);margin-bottom:2rem;letter-spacing:2px;}
+.divider{height:1px;background:var(--border);max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.divider::before{content:'';position:absolute;left:0;top:0;height:1px;width:60px;background:var(--green);box-shadow:0 0 8px var(--green);}
+
+/* PANEL */
+.px-panel{background:#000;border:1px solid var(--border);padding:1.5rem;}
+.px-panel:hover{border-color:var(--green);}
+
+/* INFO GRID */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);}
+.info-cell{background:#000;padding:1.5rem;}
+.info-cell-label{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);margin-bottom:1rem;letter-spacing:2px;}
+.info-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #0f2010;font-size:16px;}
+.info-row:last-child{border-bottom:none;}
+.info-row .k{color:var(--darkgreen);}
+.info-row .v{color:var(--green);}
+
+/* SKILL BARS */
+.skill-item{margin-bottom:1.25rem;cursor:pointer;}
+.skill-item:hover .s-name{color:#fff;text-shadow:0 0 6px #fff;}
+.skill-header{display:flex;justify-content:space-between;margin-bottom:6px;}
+.s-name{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--darkgreen);transition:all 0.2s;}
+.s-pct{font-size:16px;color:var(--green);}
+.s-track{height:10px;background:#0a0a0a;border:1px solid var(--border);position:relative;overflow:hidden;}
+.s-fill{height:100%;background:var(--green);width:0%;transition:width 1.4s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 6px var(--green);position:relative;}
+.s-fill::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0px,transparent 6px,rgba(0,0,0,0.3) 6px,rgba(0,0,0,0.3) 8px);}
+
+/* INTEREST GRID */
+.int-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.int-card{background:#000;border:1px solid var(--border);padding:0;overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.int-card:hover{border-color:var(--green);box-shadow:0 0 12px var(--border);}
+.int-card:hover .int-body{background:#0a1a0a;}
+.int-img{width:100%;height:110px;object-fit:cover;display:block;filter:grayscale(1) brightness(0.5) sepia(1) hue-rotate(80deg);transition:filter 0.3s;}
+.int-card:hover .int-img{filter:grayscale(0.5) brightness(0.7) sepia(0.5) hue-rotate(80deg);}
+.int-body{padding:0.75rem;transition:background 0.2s;}
+.int-name{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--green);margin-bottom:4px;}
+.int-sub{font-size:14px;color:var(--darkgreen);}
+
+/* HOBBY GRID */
+.hob-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hob-card{background:#000;border:1px solid var(--border);display:flex;align-items:stretch;cursor:pointer;transition:all 0.2s;}
+.hob-card:hover{border-color:var(--green);transform:translateX(4px);}
+.hob-img{width:60px;object-fit:cover;flex-shrink:0;filter:grayscale(1) brightness(0.4) sepia(1) hue-rotate(80deg);}
+.hob-body{padding:0.85rem;}
+.hob-name{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--green);margin-bottom:5px;}
+.hob-sub{font-size:14px;color:var(--darkgreen);}
+
+/* GAME CARDS */
+.game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.game-card{background:#000;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.game-card:hover{border-color:var(--green);box-shadow:0 0 16px var(--border);transform:translateY(-4px);}
+.game-card:hover .game-overlay{opacity:1;}
+.game-img{width:100%;height:180px;object-fit:cover;display:block;filter:grayscale(0.6) brightness(0.6);}
+.game-overlay{position:absolute;top:0;left:0;right:0;height:180px;background:rgba(0,255,65,0.1);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;border-bottom:1px solid var(--green);}
+.game-overlay-txt{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);text-shadow:0 0 10px var(--green);}
+.game-body{padding:0.85rem;}
+.game-name{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--green);margin-bottom:5px;}
+.game-sub{font-size:14px;color:var(--darkgreen);}
+
+/* MOVIE CARDS */
+.movie-list{display:flex;flex-direction:column;gap:6px;}
+.movie-card{background:#000;border:1px solid var(--border);display:flex;align-items:stretch;cursor:pointer;transition:all 0.2s;}
+.movie-card:hover{border-color:var(--green);transform:translateX(8px);box-shadow:0 0 10px var(--border);}
+.movie-poster{width:52px;flex-shrink:0;object-fit:cover;display:block;filter:grayscale(0.5) brightness(0.7);}
+.movie-info{padding:0.85rem 1.25rem;display:flex;flex-direction:column;justify-content:center;gap:4px;}
+.movie-num{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);}
+.movie-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);}
+.movie-meta{font-size:14px;color:var(--darkgreen);}
+.star-row{display:flex;gap:4px;margin-top:4px;}
+.star{font-size:14px;cursor:pointer;filter:grayscale(1);opacity:0.3;transition:all 0.1s;}
+.star:hover,.star.lit{filter:grayscale(0);opacity:1;transform:scale(1.3);}
+
+/* MOOD */
+.mood-box{background:#000;border:1px solid var(--border);padding:1.5rem;margin-bottom:3rem;}
+.mood-box-title{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--green);margin-bottom:1rem;}
+.mood-opts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.mood-btn{font-family:'VT323',monospace;font-size:18px;padding:6px 16px;border:1px solid var(--border);background:#000;color:var(--darkgreen);cursor:pointer;transition:all 0.2s;}
+.mood-btn:hover,.mood-btn.active{border-color:var(--green);color:var(--green);background:#0a1a0a;}
+.mood-resp{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--darkgreen);min-height:1.2rem;line-height:1.8;}
+
+/* MINI SNAKE GAME */
+.game-section{background:#000;border:2px solid var(--green);padding:1.5rem;max-width:480px;margin:0 auto;}
+.game-section-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);margin-bottom:1rem;text-align:center;}
+#snakeCanvas{display:block;margin:0 auto;image-rendering:pixelated;border:1px solid var(--border);}
+.game-controls{display:flex;justify-content:center;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap;}
+.game-info{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);text-align:center;margin-bottom:0.75rem;}
+#snakeScore{color:var(--green);}
+
+/* GOAL */
+.goal-box{background:#000;border:2px solid var(--green);padding:2rem;position:relative;}
+.goal-box::before{content:'> LOADING OBJECTIVE...';font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);display:block;margin-bottom:1rem;}
+.goal-text{font-size:22px;line-height:1.8;color:var(--darkgreen);}
+.goal-text .hl{color:var(--green);}
+
+/* SECRET HINT */
+.secret-hint{text-align:center;font-family:'Press Start 2P',monospace;font-size:7px;color:#0a2a0a;padding:1.5rem 0;letter-spacing:2px;}
+
+/* TOAST */
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:#000;border:2px solid var(--green);color:var(--green);padding:0.75rem 1.5rem;font-family:'Press Start 2P',monospace;font-size:8px;z-index:6000;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;text-shadow:0 0 8px var(--green);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* FADE IN */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity 0.6s,transform 0.6s;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* FOOTER */
+footer{background:#000;border-top:1px solid var(--border);text-align:center;padding:2rem;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);letter-spacing:2px;}
+footer span{color:var(--green);}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .hero{padding:5rem 1.5rem 2rem;}
+  .hero h1{font-size:18px;}
+  .int-grid,.game-grid{grid-template-columns:1fr 1fr!important;}
+  .hob-grid,.info-grid{grid-template-columns:1fr!important;}
+  .nav-links{display:none;}
+}
+@media(max-width:400px){
+  .int-grid,.game-grid{grid-template-columns:1fr!important;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrixCanvas"></canvas>
+<div class="progress" id="progressBar"></div>
+
+<!-- ACHIEVEMENT -->
+<div class="ach-popup" id="achPopup">
+  <span class="ach-label">▶ ACHIEVEMENT UNLOCKED</span>
+  <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+    <span class="ach-icon" id="achIcon">🏆</span>
+    <span class="ach-title" id="achTitle">—</span>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">ADRIAN<span>_AYSO</span>.exe</div>
+  <div class="nav-links">
+    <a href="#about">ABOUT</a>
+    <a href="#skills">SKILLS</a>
+    <a href="#gaming">GAMING</a>
+    <a href="#cinema">CINEMA</a>
+    <a href="#snake">PLAY</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-top">[ STATUS: <span>ONLINE</span> ] [ LOCATION: <span>MANILA_PH</span> ] [ BUILD: <span>v1.7.2025</span> ]</p>
+  <h1>ADRIAN<br>AYSO<span class="blink">_</span></h1>
+  <p class="hero-sub">// <span class="highlight" id="typedHero"></span></p>
+
+  <div class="terminal">
+    <div class="term-line">&gt; NAME: <span><span class="val">Adrian Ayso</span></span></div>
+    <div class="term-line">&gt; AGE: <span><span class="val">17</span></span></div>
+    <div class="term-line">&gt; CLASS: <span><span class="val">Aspiring IT Student</span></span></div>
+    <div class="term-line">&gt; SPEC: <span><span class="val">Front-end Developer</span></span></div>
+    <div class="term-line">&gt; LOCATION: <span><span class="val">Manila, Philippines</span></span></div>
+    <div class="term-line">&gt; STATUS: <span style="color:var(--green);">ACTIVELY BUILDING<span class="term-cursor"></span></span></div>
+  </div>
+
+  <div class="pixel-stats">
+    <div class="pstat"><span class="pstat-num" data-target="17">0</span><span class="pstat-label">AGE</span></div>
+    <div class="pstat"><span class="pstat-num" data-target="3">0</span><span class="pstat-label">SKILLS</span></div>
+    <div class="pstat"><span class="pstat-num" data-target="5">0</span><span class="pstat-label">FAV FILMS</span></div>
+    <div class="pstat"><span class="pstat-num" data-target="3">0</span><span class="pstat-label">FAV GAMES</span></div>
+  </div>
+
+  <div class="hero-btns">
+    <button class="px-btn" onclick="document.getElementById('skills').scrollIntoView({behavior:'smooth'})">[ VIEW SKILLS ]</button>
+    <button class="px-btn ghost" onclick="document.getElementById('snake').scrollIntoView({behavior:'smooth'})">[ PLAY GAME ]</button>
+  </div>
+</div>
+
+<!-- MOOD -->
+<div class="wrap">
+  <div class="mood-box fade-in">
+    <div class="mood-box-title">&gt; WHO ARE YOU?</div>
+    <div class="mood-opts">
+      <button class="mood-btn" onclick="setMood(this,'JUST BROWSING','> access granted. look around.')">JUST BROWSING</button>
+      <button class="mood-btn" onclick="setMood(this,'I KNOW HIM','> authenticated. welcome back.')">I KNOW HIM</button>
+      <button class="mood-btn" onclick="setMood(this,'RECRUITER','> interesting. he is open to opportunities.')">RECRUITER</button>
+      <button class="mood-btn" onclick="setMood(this,'STALKING','> based. welcome to the club.')">STALKING LOL</button>
+    </div>
+    <div class="mood-resp" id="moodResp"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<div class="wrap" id="about">
+  <div class="section fade-in">
+    <p class="sec-label">PROFILE</p>
+    <h2 class="sec-title">PERSONAL_INFO.dat</h2>
+    <div class="info-grid">
+      <div class="info-cell">
+        <p class="info-cell-label">STATS</p>
+        <div class="info-row"><span class="k">AGE</span><span class="v">17</span></div>
+        <div class="info-row"><span class="k">HEIGHT</span><span class="v">5'8"</span></div>
+        <div class="info-row"><span class="k">WEIGHT</span><span class="v">192 lbs</span></div>
+        <div class="info-row"><span class="k">LOCATION</span><span class="v">Manila PH</span></div>
+      </div>
+      <div class="info-cell">
+        <p class="info-cell-label">PROTOCOL</p>
+        <p style="font-size:18px;color:var(--darkgreen);line-height:1.8;">Learning by doing. Breaking things. Refining. Driven by curiosity — every project level ups the build.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<div class="wrap" id="skills">
+  <div class="section fade-in">
+    <p class="sec-label">LOADOUT</p>
+    <h2 class="sec-title">SKILLS.exe</h2>
+    <p style="font-size:16px;color:var(--darkgreen);margin-bottom:1.5rem;">> click any skill to unlock achievement</p>
+    <div id="skillBars">
+      <div class="skill-item" onclick="unlock('🌐','HTML Hero')" data-pct="80">
+        <div class="skill-header"><span class="s-name">HTML & CSS</span><span class="s-pct">80%</span></div>
+        <div class="s-track"><div class="s-fill"></div></div>
+      </div>
+      <div class="skill-item" onclick="unlock('⚡','JS Spark')" data-pct="65">
+        <div class="skill-header"><span class="s-name">JAVASCRIPT</span><span class="s-pct">65%</span></div>
+        <div class="s-track"><div class="s-fill"></div></div>
+      </div>
+      <div class="skill-item" onclick="unlock('🎨','Design Eye')" data-pct="72">
+        <div class="skill-header"><span class="s-name">UI / UX DESIGN</span><span class="s-pct">72%</span></div>
+        <div class="s-track"><div class="s-fill"></div></div>
+      </div>
+      <div class="skill-item" onclick="unlock('🐍','Snake Charmer')" data-pct="50">
+        <div class="skill-header"><span class="s-name">PYTHON</span><span class="s-pct">50%</span></div>
+        <div class="s-track"><div class="s-fill"></div></div>
+      </div>
+      <div class="skill-item" onclick="unlock('🧠','Always Learning')" data-pct="95">
+        <div class="skill-header"><span class="s-name">LEARNING SPEED</span><span class="s-pct">95%</span></div>
+        <div class="s-track"><div class="s-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- INTERESTS -->
+<div class="wrap">
+  <div class="section fade-in">
+    <p class="sec-label">MODULES</p>
+    <h2 class="sec-title">INTERESTS.dat</h2>
+    <div class="int-grid">
+      <div class="int-card" onclick="unlock('🖥️','Web Wizard')">
+        <img class="int-img" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&q=80" alt="Web dev">
+        <div class="int-body"><div class="int-name">WEB DEV</div><div class="int-sub">Interfaces & builds</div></div>
+      </div>
+      <div class="int-card" onclick="unlock('💻','Code Machine')">
+        <img class="int-img" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80" alt="Programming">
+        <div class="int-body"><div class="int-name">PROGRAMMING</div><div class="int-sub">Logic & systems</div></div>
+      </div>
+      <div class="int-card" onclick="unlock('🎨','Design Eye')">
+        <img class="int-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&q=80" alt="Design">
+        <div class="int-body"><div class="int-name">SOFTWARE DESIGN</div><div class="int-sub">UX & architecture</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- HOBBIES -->
+<div class="wrap">
+  <div class="section fade-in">
+    <p class="sec-label">ACTIVITIES</p>
+    <h2 class="sec-title">HOBBIES.dat</h2>
+    <div class="hob-grid">
+      <div class="hob-card" onclick="unlock('📚','Bookworm')">
+        <img class="hob-img" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&q=80" alt="Reading">
+        <div class="hob-body"><div class="hob-name">READING</div><div class="hob-sub">Books & knowledge</div></div>
+      </div>
+      <div class="hob-card" onclick="unlock('🎬','Cinephile')">
+        <img class="hob-img" src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=200&q=80" alt="Films">
+        <div class="hob-body"><div class="hob-name">SERIES & FILMS</div><div class="hob-sub">Stories & cinema</div></div>
+      </div>
+      <div class="hob-card" onclick="unlock('🎮','Gamer')">
+        <img class="hob-img" src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=200&q=80" alt="Gaming">
+        <div class="hob-body"><div class="hob-name">VIDEO GAMES</div><div class="hob-sub">Open world & story</div></div>
+      </div>
+      <div class="hob-card" onclick="unlock('💪','Iron Man')">
+        <img class="hob-img" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80" alt="Gym">
+        <div class="hob-body"><div class="hob-name">GYM & LIFTING</div><div class="hob-sub">Discipline & gains</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- GAMES -->
+<div class="wrap" id="gaming">
+  <div class="section fade-in">
+    <p class="sec-label">SAVED GAMES</p>
+    <h2 class="sec-title">FAV_GAMES.exe</h2>
+    <div class="game-grid">
+      <div class="game-card" onclick="unlock('🌆','Night City Native')">
+        <img class="game-img" src="https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg" alt="Cyberpunk">
+        <div class="game-overlay"><span class="game-overlay-txt">▶ UNLOCK</span></div>
+        <div class="game-body"><div class="game-name">CYBERPUNK 2077</div><div class="game-sub">RPG / Open world</div></div>
+      </div>
+      <div class="game-card" onclick="unlock('🤖','Android Dreamer')">
+        <img class="game-img" src="https://upload.wikimedia.org/wikipedia/en/7/76/Detroit_Become_Human_cover_art.jpg" alt="Detroit">
+        <div class="game-overlay"><span class="game-overlay-txt">▶ UNLOCK</span></div>
+        <div class="game-body"><div class="game-name">DETROIT: BH</div><div class="game-sub">Narrative / Choices</div></div>
+      </div>
+      <div class="game-card" onclick="unlock('🪓','Parkour King')">
+        <img class="game-img" src="https://upload.wikimedia.org/wikipedia/en/b/b3/Dying_Light_2_-_Stay_Human_cover_art.jpg" alt="Dying Light">
+        <div class="game-overlay"><span class="game-overlay-txt">▶ UNLOCK</span></div>
+        <div class="game-body"><div class="game-name">DYING LIGHT</div><div class="game-sub">Parkour / Survival</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- MOVIES -->
+<div class="wrap" id="cinema">
+  <div class="section fade-in">
+    <p class="sec-label">WATCH LIST</p>
+    <h2 class="sec-title">FAV_FILMS.dat</h2>
+    <p style="font-size:16px;color:var(--darkgreen);margin-bottom:1.25rem;">> rate them yourself — hover the stars</p>
+    <div class="movie-list">
+      <div class="movie-card" onclick="unlock('🦕','Good Dino Fan')">
+        <img class="movie-poster" src="https://image.tmdb.org/t/p/w200/bsHumvLqpFWMcfKFTtqJWvXjdqW.jpg" alt="Good Dinosaur">
+        <div class="movie-info"><p class="movie-num">FILE_01</p><p class="movie-title">THE GOOD DINOSAUR</p><p class="movie-meta">Animation / Pixar</p><div class="star-row">⭐⭐⭐⭐⭐</div></div>
+      </div>
+      <div class="movie-card" onclick="unlock('🔴','The One')">
+        <img class="movie-poster" src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Matrix">
+        <div class="movie-info"><p class="movie-num">FILE_02</p><p class="movie-title">THE MATRIX</p><p class="movie-meta">Sci-fi / Action / 1999</p><div class="star-row">⭐⭐⭐⭐⭐</div></div>
+      </div>
+      <div class="movie-card" onclick="unlock('🧼','First Rule')">
+        <img class="movie-poster" src="https://image.tmdb.org/t/p/w200/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg" alt="Fight Club">
+        <div class="movie-info"><p class="movie-num">FILE_03</p><p class="movie-title">FIGHT CLUB</p><p class="movie-meta">Drama / Thriller / 1999</p><div class="star-row">⭐⭐⭐⭐⭐</div></div>
+      </div>
+      <div class="movie-card" onclick="unlock('🥁','Drummer Boy')">
+        <img class="movie-poster" src="https://image.tmdb.org/t/p/w200/7fn624j5lj3xTme2SgiLCeuedmO.jpg" alt="Whiplash">
+        <div class="movie-info"><p class="movie-num">FILE_04</p><p class="movie-title">WHIPLASH</p><p class="movie-meta">Drama / Music / 2014</p><div class="star-row">⭐⭐⭐⭐⭐</div></div>
+      </div>
+      <div class="movie-card" onclick="unlock('💻','Zuckerberg Fan')">
+        <img class="movie-poster" src="https://image.tmdb.org/t/p/w200/n0ybibhJtQ5icDqTp8eRytcIHJx.jpg" alt="Social Network">
+        <div class="movie-info"><p class="movie-num">FILE_05</p><p class="movie-title">THE SOCIAL NETWORK</p><p class="movie-meta">Drama / Bio / 2010</p><div class="star-row">⭐⭐⭐⭐⭐</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SNAKE GAME -->
+<div class="wrap" id="snake">
+  <div class="section fade-in">
+    <p class="sec-label">MINI GAME</p>
+    <h2 class="sec-title">SNAKE.exe</h2>
+    <div class="game-section">
+      <div class="game-section-title">▶ PRESS START TO PLAY</div>
+      <div class="game-info">SCORE: <span id="snakeScore">0</span> &nbsp;|&nbsp; HI-SCORE: <span id="snakeHi">0</span></div>
+      <canvas id="snakeCanvas" width="320" height="240"></canvas>
+      <div class="game-controls">
+        <button class="px-btn" onclick="startSnake()" style="font-size:7px;">[ START ]</button>
+        <button class="px-btn ghost" onclick="resetSnake()" style="font-size:7px;">[ RESET ]</button>
+      </div>
+      <p style="font-family:'Press Start 2P',monospace;font-size:6px;color:var(--darkgreen);text-align:center;margin-top:0.75rem;line-height:2;">ARROWS or WASD to move</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- GOAL -->
+<div class="wrap" id="goal">
+  <div class="section fade-in">
+    <p class="sec-label">OBJECTIVE</p>
+    <h2 class="sec-title">MISSION.exe</h2>
+    <div class="goal-box">
+      <p class="goal-text">To grow as a developer by <span class="hl">continuously building projects</span>, sharpening technical skills, and gaining real experience creating <span class="hl">useful and meaningful digital applications</span> — one project at a time.</p>
+    </div>
+  </div>
+</div>
+
+<div class="secret-hint">type "adrian" anywhere</div>
+
+<footer>
+  &gt; <span>ADRIAN_AYSO</span>.exe &nbsp;|&nbsp; BUILD 2025 &nbsp;|&nbsp; ALL RIGHTS RESERVED
+</footer>
+
+<script>
+/* ── MATRIX RAIN ── */
+const mc=document.getElementById('matrixCanvas');
+mc.width=window.innerWidth;mc.height=window.innerHeight;
+window.addEventListener('resize',()=>{mc.width=window.innerWidth;mc.height=window.innerHeight;});
+const ctx2=mc.getContext('2d');
+const cols=Math.floor(window.innerWidth/16);
+const drops=Array(cols).fill(1);
+function drawMatrix(){
+  ctx2.fillStyle='rgba(0,0,0,0.05)';ctx2.fillRect(0,0,mc.width,mc.height);
+  ctx2.fillStyle='#00ff41';ctx2.font='14px monospace';
+  drops.forEach((y,i)=>{
+    ctx2.fillText(String.fromCharCode(0x30A0+Math.random()*96),i*16,y*16);
+    if(y*16>mc.height&&Math.random()>0.975)drops[i]=0;
+    drops[i]++;
+  });
+}
+setInterval(drawMatrix,50);
+
+/* ── PROGRESS ── */
+window.addEventListener('scroll',()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  document.getElementById('progressBar').style.width=pct+'%';
+  if(window.scrollY>200)unlock('🧭','Explorer');
+  if(window.scrollY>1500)unlock('🏊','Deep Diver');
+  if(pct>98)unlock('✅','Completionist');
+});
+
+/* ── TYPED HERO ── */
+const words=['FRONT-END DEVELOPER','IT STUDENT','GAMER','CREATIVE BUILDER','ALWAYS LEARNING'];
+let wi=0,ci=0,del=false;
+function typeHero(){
+  const el=document.getElementById('typedHero');
+  const w=words[wi];
+  if(!del){el.textContent=w.slice(0,++ci);if(ci===w.length){del=true;setTimeout(typeHero,1400);return;}}
+  else{el.textContent=w.slice(0,--ci);if(ci===0){del=false;wi=(wi+1)%words.length;}}
+  setTimeout(typeHero,del?45:90);
+}
+typeHero();
+
+/* ── STAT COUNTERS ── */
+const sObs=new IntersectionObserver(e=>{e.forEach(i=>{if(i.isIntersecting){animN(i.target);sObs.unobserve(i.target);}});},{threshold:0.5});
+document.querySelectorAll('[data-target]').forEach(el=>sObs.observe(el));
+function animN(el){const t=+el.dataset.target;let c=0;const iv=setInterval(()=>{c=Math.min(c+1,t);el.textContent=c;if(c>=t)clearInterval(iv);},80);}
+
+/* ── SKILL BARS ── */
+const skObs=new IntersectionObserver(e=>{e.forEach(i=>{if(i.isIntersecting){i.target.querySelector('.s-fill').style.width=i.target.dataset.pct+'%';skObs.unobserve(i.target);}});},{threshold:0.3});
+document.querySelectorAll('.skill-item').forEach(el=>skObs.observe(el));
+
+/* ── FADE IN ── */
+const fObs=new IntersectionObserver(e=>{e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('visible');});},{threshold:0.08});
+document.querySelectorAll('.fade-in').forEach(el=>fObs.observe(el));
+
+/* ── ACHIEVEMENTS ── */
+const done=new Set();let achT=null;
+function unlock(icon,title){
+  if(done.has(title))return;done.add(title);
+  document.getElementById('achIcon').textContent=icon;
+  document.getElementById('achTitle').textContent=title;
+  const p=document.getElementById('achPopup');p.classList.add('show');
+  clearTimeout(achT);achT=setTimeout(()=>p.classList.remove('show'),3200);
+}
+
+/* ── TOAST ── */
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ── MOOD ── */
+function setMood(btn,who,resp){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('moodResp').textContent=resp;
+  unlock('😊','Mood Shared');
+}
+
+/* ── STARS ── */
+document.querySelectorAll('.star-row').forEach(row=>{
+  const txt=[...row.textContent].filter(s=>s.trim());
+  row.innerHTML='';
+  txt.forEach((s,i)=>{
+    const sp=document.createElement('span');sp.className='star';sp.textContent='⭐';
+    sp.addEventListener('mouseenter',()=>[...row.children].forEach((c,j)=>c.classList.toggle('lit',j<=i)));
+    sp.addEventListener('mouseleave',()=>[...row.children].forEach(c=>c.classList.remove('lit')));
+    sp.addEventListener('click',e=>{
+      e.stopPropagation();const r=i+1;
+      toast('> rated '+r+' star'+(r>1?'s':'')+' // nice taste');
+      if(r===5)unlock('⭐','5-Star Taste');
+    });
+    row.appendChild(sp);
+  });
+});
+
+/* ── SECRET WORD ── */
+let sec='';
+document.addEventListener('keydown',e=>{
+  if(e.key.length===1){sec=(sec+e.key.toLowerCase()).slice(-6);if(sec==='adrian'){unlock('🤫','Secret Found');toast('> you typed your own name lol 😂');document.body.style.filter='brightness(1.3)';setTimeout(()=>document.body.style.filter='',600);}}
+});
+
+/* ── LOGO CLICK x5 ── */
+let lc=0,lt=null;
+document.querySelector('.nav-logo').addEventListener('click',()=>{
+  lc++;clearTimeout(lt);lt=setTimeout(()=>lc=0,1800);
+  if(lc>=5){lc=0;unlock('🏠','Logo Clicker');toast('> ok you really clicked that 5 times bro 😭');}
+});
+
+/* ── SNAKE GAME ── */
+const sc=document.getElementById('snakeCanvas');
+const sctx=sc.getContext('2d');
+const CELL=16,COLS=20,ROWS=15;
+let snake,dir,food,running,snakeTimer,score,hiScore=0;
+
+function resetSnake(){
+  snake=[{x:10,y:7},{x:9,y:7},{x:8,y:7}];
+  dir={x:1,y:0};score=0;running=false;
+  clearInterval(snakeTimer);
+  placeFood();drawSnake();
+  document.getElementById('snakeScore').textContent=0;
+}
+
+function placeFood(){
+  do{food={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)};}
+  while(snake.some(s=>s.x===food.x&&s.y===food.y));
+}
+
+function drawSnake(){
+  sctx.fillStyle='#000';sctx.fillRect(0,0,sc.width,sc.height);
+  // grid
+  sctx.strokeStyle='#0a1a0a';sctx.lineWidth=0.5;
+  for(let x=0;x<=COLS;x++){sctx.beginPath();sctx.moveTo(x*CELL,0);sctx.lineTo(x*CELL,ROWS*CELL);sctx.stroke();}
+  for(let y=0;y<=ROWS;y++){sctx.beginPath();sctx.moveTo(0,y*CELL);sctx.lineTo(COLS*CELL,y*CELL);sctx.stroke();}
+  // food
+  sctx.fillStyle='#ff3333';sctx.shadowColor='#ff3333';sctx.shadowBlur=8;
+  sctx.fillRect(food.x*CELL+2,food.y*CELL+2,CELL-4,CELL-4);
+  sctx.shadowBlur=0;
+  // snake
+  snake.forEach((seg,i)=>{
+    sctx.fillStyle=i===0?'#00ff41':'#00aa2b';
+    sctx.shadowColor='#00ff41';sctx.shadowBlur=i===0?10:4;
+    sctx.fillRect(seg.x*CELL+1,seg.y*CELL+1,CELL-2,CELL-2);
+  });
+  sctx.shadowBlur=0;
+  if(!running&&score===0){
+    sctx.fillStyle='rgba(0,0,0,0.7)';sctx.fillRect(0,0,sc.width,sc.height);
+    sctx.fillStyle='#00ff41';sctx.font='bold 12px "Press Start 2P",monospace';
+    sctx.textAlign='center';sctx.fillText('PRESS START',sc.width/2,sc.height/2);
+    sctx.textAlign='left';
+  }
+}
+
+function startSnake(){
+  if(running)return;
+  running=true;
+  snakeTimer=setInterval(()=>{
+    const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+    if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||snake.some(s=>s.x===head.x&&s.y===head.y)){
+      running=false;clearInterval(snakeTimer);
+      sctx.fillStyle='rgba(0,0,0,0.75)';sctx.fillRect(0,0,sc.width,sc.height);
+      sctx.fillStyle='#ff3333';sctx.font='bold 12px "Press Start 2P",monospace';
+      sctx.textAlign='center';sctx.fillText('GAME OVER',sc.width/2,sc.height/2-10);
+      sctx.fillStyle='#00ff41';sctx.font='8px "Press Start 2P",monospace';
+      sctx.fillText('SCORE: '+score,sc.width/2,sc.height/2+12);
+      sctx.textAlign='left';
+      if(score>hiScore){hiScore=score;document.getElementById('snakeHi').textContent=hiScore;unlock('🐍','Snake Master');}
+      if(score>=5)unlock('🎮','Gamer Confirmed');
+      return;
+    }
+    snake.unshift(head);
+    if(head.x===food.x&&head.y===food.y){
+      score++;document.getElementById('snakeScore').textContent=score;
+      placeFood();
+      if(score===10)unlock('🏆','Snake Legend');
+    } else snake.pop();
+    drawSnake();
+  },130);
+}
+
+document.addEventListener('keydown',e=>{
+  if(!running)return;
+  const map={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0},
+    w:{x:0,y:-1},s:{x:0,y:1},a:{x:-1,y:0},d:{x:1,y:0}};
+  const nd=map[e.key];
+  if(nd&&!(nd.x===-dir.x&&nd.y===-dir.y)){dir=nd;e.preventDefault();}
+});
+
+resetSnake();
+</script>
+</body>
+</html>
