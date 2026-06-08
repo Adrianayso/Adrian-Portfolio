@@ -56,9 +56,9 @@ setInterval(drawMatrix,40);
 window.addEventListener('scroll',()=>{
   const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
   document.getElementById('progressBar').style.width=pct+'%';
-  if(window.scrollY>200)unlock('🧭','Explorer');
-  if(window.scrollY>1500)unlock('🏊','Deep Diver');
-  if(pct>98)unlock('✅','Completionist');
+  if(window.scrollY>200)unlock('[+]','Explorer');
+  if(window.scrollY>1500)unlock('[+]','Deep Diver');
+  if(pct>98)unlock('[OK]','Completionist');
 });
 
 /* ── TYPED HERO ── */
@@ -107,7 +107,7 @@ function setMood(btn,who,resp){
   document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('moodResp').textContent=resp;
-  unlock('😊','Mood Shared');
+  unlock('[:]','Mood Shared');
 }
 
 /* ── EXPAND CARD (interests, hobbies, games) ── */
@@ -147,14 +147,14 @@ function expandMovie(el,icon,title,filmTitle,meta,desc){
 /* ── SECRET WORD ── */
 let sec='';
 document.addEventListener('keydown',e=>{
-  if(e.key.length===1){sec=(sec+e.key.toLowerCase()).slice(-6);if(sec==='adrian'){unlock('🤫','Secret Found');toast('> you typed your own name lol 😂');document.body.style.filter='brightness(1.3)';setTimeout(()=>document.body.style.filter='',600);}}
+  if(e.key.length===1){sec=(sec+e.key.toLowerCase()).slice(-6);if(sec==='adrian'){unlock('[SHH]','Secret Found');toast('> you typed your own name lol [lol]');document.body.style.filter='brightness(1.3)';setTimeout(()=>document.body.style.filter='',600);}}
 });
 
 /* ── LOGO CLICK x5 ── */
 let lc=0,lt=null;
 document.querySelector('.nav-logo').addEventListener('click',()=>{
   lc++;clearTimeout(lt);lt=setTimeout(()=>lc=0,1800);
-  if(lc>=5){lc=0;unlock('🏠','Logo Clicker');toast('> ok you really clicked that 5 times bro 😭');}
+  if(lc>=5){lc=0;unlock('[HSE]','Logo Clicker');toast('> ok you really clicked that 5 times bro [!!]');}
 });
 
 /* ── SNAKE GAME ── */
@@ -214,15 +214,15 @@ function startSnake(){
       sctx.fillStyle='#00ff41';sctx.font='8px "Press Start 2P",monospace';
       sctx.fillText('SCORE: '+score,sc.width/2,sc.height/2+12);
       sctx.textAlign='left';
-      if(score>hiScore){hiScore=score;document.getElementById('snakeHi').textContent=hiScore;unlock('🐍','Snake Master');}
-      if(score>=5)unlock('🎮','Gamer Confirmed');
+      if(score>hiScore){hiScore=score;document.getElementById('snakeHi').textContent=hiScore;unlock('[SN]','Snake Master');}
+      if(score>=5)unlock('[CTR]','Gamer Confirmed');
       return;
     }
     snake.unshift(head);
     if(head.x===food.x&&head.y===food.y){
       score++;document.getElementById('snakeScore').textContent=score;
       placeFood();
-      if(score===10)unlock('🏆','Snake Legend');
+      if(score===10)unlock('[★]','Snake Legend');
     } else snake.pop();
     drawSnake();
   },130);
@@ -306,8 +306,8 @@ resetSnake();
 /* ── BROKEN IMAGE FALLBACKS ── */
 document.querySelectorAll('.movie-poster').forEach(img=>{
   img.addEventListener('error',function(){
-    const map={'Good Dinosaur':'🦕','Matrix':'🔴','Fight Club':'🧼','Whiplash':'🥁','Social Network':'💻'};
-    const emoji=map[this.alt]||'🎬';
+    const map={'Good Dinosaur':'[DIN]','Matrix':'[RED]','Fight Club':'[BAR]','Whiplash':'[DRM]','Social Network':'[DEV]'};
+    const emoji=map[this.alt]||'[CAM]';
     this.outerHTML=`<div class="movie-poster" style="background:#0a1a0a;display:flex;align-items:center;justify-content:center;font-size:1.6rem;border-right:1px solid var(--border);flex-shrink:0;">${emoji}</div>`;
   });
 });
