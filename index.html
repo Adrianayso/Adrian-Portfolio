@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <canvas id="matrixCanvas"></canvas>
@@ -16,7 +17,7 @@
 <div class="ach-popup" id="achPopup">
   <span class="ach-label">▶ ACHIEVEMENT UNLOCKED</span>
   <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-    <span class="ach-icon" id="achIcon">🏆</span>
+    <span class="ach-icon" id="achIcon">[★]</span>
     <span class="ach-title" id="achTitle">—</span>
   </div>
 </div>
@@ -71,7 +72,7 @@
       <div class="pstat"><span class="pstat-num" data-target="17">0</span><span class="pstat-label">AGE</span></div>
       <div class="pstat"><span class="pstat-num" data-target="2">0</span><span class="pstat-label">PROJECTS</span></div>
       <div class="pstat"><span class="pstat-num" data-target="5">0</span><span class="pstat-label">FAV FILMS</span></div>
-      <div class="pstat"><span class="pstat-num" data-target="3">0</span><span class="pstat-label">FAV GAMES</span></div>
+      <div class="pstat"><span class="pstat-num" data-target="6">0</span><span class="pstat-label">FAV GAMES</span></div>
     </div>
     <div class="hero-btns">
       <button class="px-btn" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">[ MY PROJECTS ]</button>
@@ -94,7 +95,7 @@
     <p style="font-size:16px;color:var(--darkgreen);margin-bottom:2rem;">> 2 projects shipped and live — click to visit</p>
     <div class="proj-grid">
 
-      <div class="proj-card" onclick="unlock('🤖','AskBro Deployed');window.open('https://askbro-five.vercel.app/','_blank')">
+      <div class="proj-card" onclick="unlock('[BOT]','AskBro Deployed');window.open('https://askbro-five.vercel.app/','_blank')">
         <div class="proj-header">
           <div class="proj-num">PROJECT_01</div>
           <div class="proj-status">LIVE ●</div>
@@ -111,7 +112,7 @@
         </div>
       </div>
 
-      <div class="proj-card" onclick="unlock('📰','Tsismis Deployed');window.open('https://tsismis-phi.vercel.app/','_blank')">
+      <div class="proj-card" onclick="unlock('[NEW]','Tsismis Deployed');window.open('https://tsismis-phi.vercel.app/','_blank')">
         <div class="proj-header">
           <div class="proj-num">PROJECT_02</div>
           <div class="proj-status">LIVE ●</div>
@@ -181,27 +182,27 @@
     <h2 class="sec-title">SKILLS.exe</h2>
     <p style="font-size:16px;color:var(--darkgreen);margin-bottom:1.5rem;">> click any skill to unlock achievement</p>
     <div id="skillBars">
-      <div class="skill-item" onclick="expandSkill(this,'🌐','HTML Hero','> Markup and styling are my foundation. I can build clean responsive layouts from scratch.')" data-pct="80">
+      <div class="skill-item" onclick="expandSkill(this,'[WEB]','HTML Hero','> Markup and styling are my foundation. I can build clean responsive layouts from scratch.')" data-pct="80">
         <div class="skill-header"><span class="s-name">HTML & CSS</span><span class="s-pct">80%</span></div>
         <div class="s-track"><div class="s-fill"></div></div>
         <div class="skill-detail"></div>
       </div>
-      <div class="skill-item" onclick="expandSkill(this,'⚡','JS Spark','> JavaScript is where the magic happens. DOM manipulation, events, APIs — still growing fast.')" data-pct="65">
+      <div class="skill-item" onclick="expandSkill(this,'[ZAP]','JS Spark','> JavaScript is where the magic happens. DOM manipulation, events, APIs — still growing fast.')" data-pct="65">
         <div class="skill-header"><span class="s-name">JAVASCRIPT</span><span class="s-pct">65%</span></div>
         <div class="s-track"><div class="s-fill"></div></div>
         <div class="skill-detail"></div>
       </div>
-      <div class="skill-item" onclick="expandSkill(this,'🎨','Design Eye','> I care about how things feel to use, not just how they look. UX matters more than aesthetics.')" data-pct="72">
+      <div class="skill-item" onclick="expandSkill(this,'[ART]','Design Eye','> I care about how things feel to use, not just how they look. UX matters more than aesthetics.')" data-pct="72">
         <div class="skill-header"><span class="s-name">UI / UX DESIGN</span><span class="s-pct">72%</span></div>
         <div class="s-track"><div class="s-fill"></div></div>
         <div class="skill-detail"></div>
       </div>
-      <div class="skill-item" onclick="expandSkill(this,'🐍','Snake Charmer','> Python is my secondary weapon. Scripting, automation, and backend basics.')" data-pct="50">
+      <div class="skill-item" onclick="expandSkill(this,'[SN]','Snake Charmer','> Python is my secondary weapon. Scripting, automation, and backend basics.')" data-pct="50">
         <div class="skill-header"><span class="s-name">PYTHON</span><span class="s-pct">50%</span></div>
         <div class="s-track"><div class="s-fill"></div></div>
         <div class="skill-detail"></div>
       </div>
-      <div class="skill-item" onclick="expandSkill(this,'🧠','Always Learning','> This one never stops filling. Every project, every error, every fix — XP gained.')" data-pct="95">
+      <div class="skill-item" onclick="expandSkill(this,'[AI]','Always Learning','> This one never stops filling. Every project, every error, every fix — XP gained.')" data-pct="95">
         <div class="skill-header"><span class="s-name">LEARNING SPEED</span><span class="s-pct">95%</span></div>
         <div class="s-track"><div class="s-fill"></div></div>
         <div class="skill-detail"></div>
@@ -218,17 +219,17 @@
     <p class="sec-label">MODULES</p>
     <h2 class="sec-title">INTERESTS.dat</h2>
     <div class="int-grid">
-      <div class="int-card" onclick="expandCard(this,'🖥️','Web Wizard','> Building interfaces that look good and work even better. Adrian\'s primary passion.')">
+      <div class="int-card" onclick="expandCard(this,'[PC]️','Web Wizard','> Building interfaces that look good and work even better. Adrian\'s primary passion.')">
         <img class="int-img" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&q=80" alt="Web dev">
         <div class="int-body"><div class="int-name">WEB DEV</div><div class="int-sub">Interfaces & builds</div></div>
         <div class="card-drawer"></div>
       </div>
-      <div class="int-card" onclick="expandCard(this,'💻','Code Machine','> Logic, algorithms and systems. Writing code that solves real problems elegantly.')">
+      <div class="int-card" onclick="expandCard(this,'[DEV]','Code Machine','> Logic, algorithms and systems. Writing code that solves real problems elegantly.')">
         <img class="int-img" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80" alt="Programming">
         <div class="int-body"><div class="int-name">PROGRAMMING</div><div class="int-sub">Logic & systems</div></div>
         <div class="card-drawer"></div>
       </div>
-      <div class="int-card" onclick="expandCard(this,'🎨','Design Eye','> Where function meets form. Making things that feel right to use, not just look right.')">
+      <div class="int-card" onclick="expandCard(this,'[ART]','Design Eye','> Where function meets form. Making things that feel right to use, not just look right.')">
         <img class="int-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&q=80" alt="Design">
         <div class="int-body"><div class="int-name">SOFTWARE DESIGN</div><div class="int-sub">UX & architecture</div></div>
         <div class="card-drawer"></div>
@@ -245,19 +246,19 @@
     <p class="sec-label">ACTIVITIES</p>
     <h2 class="sec-title">HOBBIES.dat</h2>
     <div class="hob-grid">
-      <div class="hob-card" onclick="expandCard(this,'📚','Bookworm','> Loves diving into books. Stories and knowledge feed the curiosity that drives his builds.')">
+      <div class="hob-card" onclick="expandCard(this,'[BK]','Bookworm','> Loves diving into books. Stories and knowledge feed the curiosity that drives his builds.')">
         <img class="hob-img" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&q=80" alt="Reading">
         <div class="hob-body"><div class="hob-name">READING</div><div class="hob-sub">Books & knowledge</div><div class="card-drawer"></div></div>
       </div>
-      <div class="hob-card" onclick="expandCard(this,'🎬','Cinephile','> Series and films are his thing. Massive taste — from Pixar to psychological thrillers.')">
+      <div class="hob-card" onclick="expandCard(this,'[CAM]','Cinephile','> Series and films are his thing. Massive taste — from Pixar to psychological thrillers.')">
         <img class="hob-img" src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=200&q=80" alt="Films">
         <div class="hob-body"><div class="hob-name">SERIES & FILMS</div><div class="hob-sub">Stories & cinema</div><div class="card-drawer"></div></div>
       </div>
-      <div class="hob-card" onclick="expandCard(this,'🎮','Gamer','> Narrative-driven open world games. Cyberpunk, Detroit, Dying Light — taste is elite.')">
+      <div class="hob-card" onclick="expandCard(this,'[CTR]','Gamer','> Narrative-driven open world games. Cyberpunk, Detroit, Dying Light — taste is elite.')">
         <img class="hob-img" src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=200&q=80" alt="Gaming">
         <div class="hob-body"><div class="hob-name">VIDEO GAMES</div><div class="hob-sub">Open world & story</div><div class="card-drawer"></div></div>
       </div>
-      <div class="hob-card" onclick="expandCard(this,'💪','Iron Man','> Gym is the other grind. Discipline in the gym carries over to discipline in the code.')">
+      <div class="hob-card" onclick="expandCard(this,'[STR]','Iron Man','> Gym is the other grind. Discipline in the gym carries over to discipline in the code.')">
         <img class="hob-img" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80" alt="Gym">
         <div class="hob-body"><div class="hob-name">GYM & LIFTING</div><div class="hob-sub">Discipline & gains</div><div class="card-drawer"></div></div>
       </div>
@@ -273,22 +274,40 @@
     <p class="sec-label">SAVED GAMES</p>
     <h2 class="sec-title">FAV_GAMES.exe</h2>
     <div class="game-grid">
-      <div class="game-card" onclick="expandCard(this,'🌆','Night City Native','> Night City never sleeps and neither does V. 200+ hours in and still not done.')">
+      <div class="game-card" onclick="expandCard(this,'[CTY]','Night City Native','> Night City never sleeps and neither does V. 200+ hours in and still not done.')">
         <img class="game-img" src="https://cdn.akamai.steamstatic.com/steam/apps/1091500/library_600x900.jpg" alt="Cyberpunk">
         <div class="game-overlay"><span class="game-overlay-txt">▶ ACCESS</span></div>
         <div class="game-body"><div class="game-name">CYBERPUNK 2077</div><div class="game-sub">RPG / Open world</div></div>
         <div class="card-drawer"></div>
       </div>
-      <div class="game-card" onclick="expandCard(this,'🤖','Android Dreamer','> Every choice matters. Connor or Markus — the story hits different every playthrough.')">
+      <div class="game-card" onclick="expandCard(this,'[BOT]','Android Dreamer','> Every choice matters. Connor or Markus — the story hits different every playthrough.')">
         <img class="game-img" src="https://cdn.akamai.steamstatic.com/steam/apps/1222140/library_600x900.jpg" alt="Detroit">
         <div class="game-overlay"><span class="game-overlay-txt">▶ ACCESS</span></div>
         <div class="game-body"><div class="game-name">DETROIT: BH</div><div class="game-sub">Narrative / Choices</div></div>
         <div class="card-drawer"></div>
       </div>
-      <div class="game-card" onclick="expandCard(this,'🪓','Parkour King','> The parkour is unmatched. Rooftop running at night with zombies below is elite.')">
+      <div class="game-card" onclick="expandCard(this,'[AXE]','Parkour King','> The parkour is unmatched. Rooftop running at night with zombies below is elite.')">
         <img class="game-img" src="https://cdn.akamai.steamstatic.com/steam/apps/534380/library_600x900.jpg" alt="Dying Light">
         <div class="game-overlay"><span class="game-overlay-txt">▶ ACCESS</span></div>
         <div class="game-body"><div class="game-name">DYING LIGHT</div><div class="game-sub">Parkour / Survival</div></div>
+        <div class="card-drawer"></div>
+      </div>
+      <div class="game-card" onclick="expandCard(this,'[BS1]','Rapture Survivor','> Welcome to Rapture. Would you kindly finish this masterpiece of atmospheric horror.')">
+        <img class="game-img" src="https://cdn.akamai.steamstatic.com/steam/apps/409710/library_600x900.jpg" alt="BioShock" onerror="this.style.background='#0a1a0a';this.src=''">
+        <div class="game-overlay"><span class="game-overlay-txt">▶ ACCESS</span></div>
+        <div class="game-body"><div class="game-name">BIOSHOCK</div><div class="game-sub">FPS / Atmospheric</div></div>
+        <div class="card-drawer"></div>
+      </div>
+      <div class="game-card" onclick="expandCard(this,'[BS2]','Big Daddy','> BioShock 2 + Minerva\'s Den DLC. Play as a Big Daddy — darker and more personal. Minerva\'s Den is peak DLC storytelling, Subject Sigma\'s arc hits deep.')">
+        <img class="game-img" src="https://cdn.akamai.steamstatic.com/steam/apps/409720/library_600x900.jpg" alt="BioShock 2" onerror="this.style.background='#0a1a0a';this.src=''">
+        <div class="game-overlay"><span class="game-overlay-txt">▶ ACCESS</span></div>
+        <div class="game-body"><div class="game-name">BIOSHOCK 2</div><div class="game-sub">FPS / + Minerva's Den DLC</div></div>
+        <div class="card-drawer"></div>
+      </div>
+      <div class="game-card" onclick="expandCard(this,'[BSI]','Sky Citizen','> BioShock Infinite + Burial at Sea DLC. Columbia in the sky is a narrative masterpiece. Burial at Sea brings it back to Rapture and ties the whole trilogy together.')">
+        <img class="game-img" src="https://cdn.akamai.steamstatic.com/steam/apps/8870/library_600x900.jpg" alt="BioShock Infinite" onerror="this.style.background='#0a1a0a';this.src=''">
+        <div class="game-overlay"><span class="game-overlay-txt">▶ ACCESS</span></div>
+        <div class="game-body"><div class="game-name">BIOSHOCK INFINITE</div><div class="game-sub">FPS / + Burial at Sea DLC</div></div>
         <div class="card-drawer"></div>
       </div>
     </div>
@@ -304,28 +323,28 @@
     <h2 class="sec-title">FAV_FILMS.dat</h2>
     <p style="font-size:16px;color:var(--darkgreen);margin-bottom:1.25rem;">> click any file to expand</p>
     <div class="movie-list">
-      <div class="movie-card" onclick="expandMovie(this,'🔴','The One','THE MATRIX','Sci-fi / Action / 1999','Neo discovers reality is a simulation. A mind-bending classic that defined a generation.')">
+      <div class="movie-card" onclick="expandMovie(this,'[RED]','The One','THE MATRIX','Sci-fi / Action / 1999','Neo discovers reality is a simulation. A mind-bending classic that defined a generation.')">
         <div class="movie-card-top"><img class="movie-poster" src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Matrix">
         <div class="movie-info"><p class="movie-num">FILE_01</p><p class="movie-title">THE MATRIX</p><p class="movie-meta">Sci-fi / Action / 1999</p><p class="movie-expand-hint">> CLICK TO ACCESS FILE</p></div></div>
         <div class="movie-drawer"></div>
       </div>
-      <div class="movie-card" onclick="expandMovie(this,'🧼','First Rule','FIGHT CLUB','Drama / Thriller / 1999','The first rule is you do not talk about it. A raw brutal masterpiece about identity.')">
+      <div class="movie-card" onclick="expandMovie(this,'[BAR]','First Rule','FIGHT CLUB','Drama / Thriller / 1999','The first rule is you do not talk about it. A raw brutal masterpiece about identity.')">
         <div class="movie-card-top"><img class="movie-poster" src="https://image.tmdb.org/t/p/w200/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg" alt="Fight Club">
         <div class="movie-info"><p class="movie-num">FILE_02</p><p class="movie-title">FIGHT CLUB</p><p class="movie-meta">Drama / Thriller / 1999</p><p class="movie-expand-hint">> CLICK TO ACCESS FILE</p></div></div>
         <div class="movie-drawer"></div>
       </div>
-      <div class="movie-card" onclick="expandMovie(this,'🥁','Drummer Boy','WHIPLASH','Drama / Music / 2014','Not quite my tempo. One of the most intense films ever made about obsession and greatness.')">
+      <div class="movie-card" onclick="expandMovie(this,'[DRM]','Drummer Boy','WHIPLASH','Drama / Music / 2014','Not quite my tempo. One of the most intense films ever made about obsession and greatness.')">
         <div class="movie-card-top"><img class="movie-poster" src="https://image.tmdb.org/t/p/w200/7fn624j5lj3xTme2SgiLCeuedmO.jpg" alt="Whiplash">
         <div class="movie-info"><p class="movie-num">FILE_03</p><p class="movie-title">WHIPLASH</p><p class="movie-meta">Drama / Music / 2014</p><p class="movie-expand-hint">> CLICK TO ACCESS FILE</p></div></div>
         <div class="movie-drawer"></div>
       </div>
-      <div class="movie-card" onclick="expandMovie(this,'💻','Zuckerberg Fan','THE SOCIAL NETWORK','Drama / Bio / 2010','A billion dollar idea born from revenge. The internet age origin story told perfectly.')">
+      <div class="movie-card" onclick="expandMovie(this,'[DEV]','Zuckerberg Fan','THE SOCIAL NETWORK','Drama / Bio / 2010','A billion dollar idea born from revenge. The internet age origin story told perfectly.')">
         <div class="movie-card-top"><img class="movie-poster" src="https://image.tmdb.org/t/p/w200/n0ybibhJtQ5icDqTp8eRytcIHJx.jpg" alt="Social Network">
         <div class="movie-info"><p class="movie-num">FILE_04</p><p class="movie-title">THE SOCIAL NETWORK</p><p class="movie-meta">Drama / Bio / 2010</p><p class="movie-expand-hint">> CLICK TO ACCESS FILE</p></div></div>
         <div class="movie-drawer"></div>
       </div>
-      <div class="movie-card" onclick="expandMovie(this,'🦕','Good Dino Fan','THE GOOD DINOSAUR','Animation / Pixar','What if the asteroid missed? A beautiful underrated Pixar gem that hits different.')">
-        <div class="movie-card-top"><img class="movie-poster" src="http://www.impawards.com/2015/posters/good_dinosaur.jpg" alt="Good Dinosaur" onerror="this.style.background='#0a2a0a';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.src='';this.alt='🦕'">
+      <div class="movie-card" onclick="expandMovie(this,'[DIN]','Good Dino Fan','THE GOOD DINOSAUR','Animation / Pixar','What if the asteroid missed? A beautiful underrated Pixar gem that hits different.')">
+        <div class="movie-card-top"><img class="movie-poster" src="http://www.impawards.com/2015/posters/good_dinosaur.jpg" alt="Good Dinosaur" onerror="this.style.background='#0a2a0a';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.src='';this.alt='[DIN]'">
         <div class="movie-info"><p class="movie-num">FILE_05</p><p class="movie-title">THE GOOD DINOSAUR</p><p class="movie-meta">Animation / Pixar</p><p class="movie-expand-hint">> CLICK TO ACCESS FILE</p></div></div>
         <div class="movie-drawer"></div>
       </div>
@@ -387,4 +406,5 @@
 <script src="script.js"></script>
 
 </body>
+
 </html>
