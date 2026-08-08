@@ -303,11 +303,3 @@ sc.addEventListener('touchend',e=>{
 },{passive:true});
 
 resetSnake();
-/* ── BROKEN IMAGE FALLBACKS ── */
-document.querySelectorAll('.movie-poster').forEach(img=>{
-  img.addEventListener('error',function(){
-    const map={'Good Dinosaur':'[DIN]','Matrix':'[RED]','Fight Club':'[BAR]','Whiplash':'[DRM]','Social Network':'[DEV]'};
-    const emoji=map[this.alt]||'[CAM]';
-    this.outerHTML=`<div class="movie-poster" style="background:#0a1a0a;display:flex;align-items:center;justify-content:center;font-size:1.6rem;border-right:1px solid var(--border);flex-shrink:0;">${emoji}</div>`;
-  });
-});

@@ -139,33 +139,35 @@ nav{position:fixed;top:3px;left:0;right:0;z-index:5000;background:rgba(0,0,0,0.9
 .hob-name{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--green);margin-bottom:5px;}
 .hob-sub{font-size:14px;color:var(--darkgreen);}
 
-/* GAME CARDS */
-.game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.game-card{background:#000;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
-.game-card:hover{border-color:var(--green);box-shadow:0 0 16px var(--border);transform:translateY(-4px);}
+/* GAME CARDS (now sized like the old compact movie list) */
+.game-grid{display:flex;flex-direction:column;gap:6px;}
+.game-card{background:#000;border:1px solid var(--border);display:flex;align-items:stretch;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.game-card:hover{border-color:var(--green);transform:translateX(8px);box-shadow:0 0 10px var(--border);}
 .game-card:hover .game-overlay{opacity:1;}
-.game-img{width:100%;height:180px;object-fit:cover;display:block;filter:grayscale(0.6) brightness(0.6);}
-.game-overlay{position:absolute;top:0;left:0;right:0;height:180px;background:rgba(0,255,65,0.1);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;border-bottom:1px solid var(--green);}
-.game-overlay-txt{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);text-shadow:0 0 10px var(--green);}
-.game-body{padding:0.85rem;}
-.game-name{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--green);margin-bottom:5px;}
+.game-img{width:52px;flex-shrink:0;object-fit:cover;display:block;filter:grayscale(0.6) brightness(0.6);}
+.game-overlay{position:absolute;top:0;left:0;width:52px;height:100%;background:rgba(0,255,65,0.1);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;border-right:1px solid var(--green);}
+.game-overlay-txt{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--green);text-shadow:0 0 10px var(--green);text-align:center;line-height:1.6;}
+.game-body{padding:0.85rem 1.25rem;display:flex;flex-direction:column;justify-content:center;gap:4px;}
+.game-name{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);}
 .game-sub{font-size:14px;color:var(--darkgreen);}
 
-/* MOVIE CARDS */
-.movie-list{display:flex;flex-direction:column;gap:6px;}
-.movie-card{background:#000;border:1px solid var(--border);display:flex;flex-direction:column;cursor:pointer;transition:all 0.2s;}
-.movie-card:hover{border-color:var(--green);transform:translateX(8px);box-shadow:0 0 10px var(--border);}
-.movie-card-top{display:flex;align-items:stretch;}
-.movie-poster{width:52px;flex-shrink:0;object-fit:cover;display:block;filter:grayscale(0.5) brightness(0.7);transition:filter 0.3s;}
+/* MOVIE CARDS (now sized like the old big game grid) */
+.movie-list{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
+.movie-card{background:#000;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;flex:0 1 calc(33.333% - 6px);min-width:150px;}
+.movie-card:hover{border-color:var(--green);box-shadow:0 0 16px var(--border);transform:translateY(-4px);}
+.movie-card-top{display:block;}
+.movie-poster{width:100%;height:180px;object-fit:cover;display:block;filter:grayscale(0.5) brightness(0.7);transition:filter 0.3s;}
 .movie-card:hover .movie-poster{filter:grayscale(0) brightness(0.9);}
-.movie-info{padding:0.85rem 1.25rem;display:flex;flex-direction:column;justify-content:center;gap:4px;}
-.movie-num{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);}
-.movie-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green);}
+.movie-poster-fallback{background:#0a1a0a;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:12px;color:var(--darkgreen);border-bottom:1px solid var(--border);transition:color 0.3s;}
+.movie-card:hover .movie-poster-fallback{color:var(--green);}
+.movie-info{padding:0.85rem;}
+.movie-num{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);margin-bottom:5px;}
+.movie-title{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--green);}
 .movie-meta{font-size:14px;color:var(--darkgreen);}
-.movie-expand-hint{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--dimgreen);margin-top:2px;transition:color 0.2s;}
+.movie-expand-hint{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--dimgreen);margin-top:5px;transition:color 0.2s;}
 .movie-card:hover .movie-expand-hint{color:var(--darkgreen);}
-.movie-drawer{max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s;padding:0 1.25rem;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);line-height:2.2;border-top:0px solid var(--border);}
-.movie-card.open .movie-drawer{max-height:120px;padding:0.75rem 1.25rem;border-top:1px solid var(--border);}
+.movie-drawer{max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s;padding:0 0.85rem;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--darkgreen);line-height:2.2;border-top:0px solid var(--border);}
+.movie-card.open .movie-drawer{max-height:140px;padding:0.75rem 0.85rem;border-top:1px solid var(--border);}
 .movie-card.open{border-color:var(--green);box-shadow:0 0 14px var(--border);}
 .movie-card.open .movie-expand-hint{color:var(--green);}
 
@@ -279,7 +281,8 @@ footer span{color:var(--green);}
   .px-btn{font-size:7px;padding:10px 14px;width:100%;text-align:center;}
 
   /* Sections */
-  .int-grid,.game-grid{grid-template-columns:1fr 1fr!important;}
+  .int-grid{grid-template-columns:1fr 1fr!important;}
+  .movie-card{flex:0 1 calc(50% - 4px)!important;}
   .hob-grid,.info-grid,.proj-grid,.about-with-photo{grid-template-columns:1fr!important;}
   .nav-links{display:none;}
   .nav-hamburger{display:flex!important;}
@@ -294,7 +297,8 @@ footer span{color:var(--green);}
   .mood-btn{font-size:14px;padding:5px 10px;}
 }
 @media(max-width:400px){
-  .int-grid,.game-grid{grid-template-columns:1fr!important;}
+  .int-grid{grid-template-columns:1fr!important;}
+  .movie-card{flex:0 1 100%!important;}
   .hero h1{font-size:18px;}
   .hero-photo-col{width:110px;height:135px;}
   .hero-photo-img{width:110px;height:135px;}
