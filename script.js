@@ -69,6 +69,46 @@ if(cinematicVideo){
   vidObs.observe(cinematicVideo);
 }
 
+/* ── MISSION VIDEO LOOP (mobile-safe) ── */
+const goalVideo=document.querySelector('.goal-video');
+if(goalVideo){
+  goalVideo.muted=true;
+  goalVideo.loop=true;
+  goalVideo.setAttribute('playsinline','true');
+  goalVideo.setAttribute('webkit-playsinline','true');
+
+  const startGoalVideo=()=>{
+    goalVideo.muted=true;
+    goalVideo.loop=true;
+    goalVideo.play().catch(()=>{});
+  };
+
+  goalVideo.addEventListener('ended',()=>{
+    goalVideo.currentTime=0;
+    startGoalVideo();
+  });
+
+  goalVideo.addEventListener('pause',()=>{
+    if(document.visibilityState==='visible') startGoalVideo();
+  });
+
+  ['loadeddata','canplay','loadedmetadata'].forEach(ev=>{
+    goalVideo.addEventListener(ev, startGoalVideo, { once: true });
+  });
+
+  const resumeGoalVideo=()=>{
+    startGoalVideo();
+    document.removeEventListener('pointerdown', resumeGoalVideo);
+    document.removeEventListener('touchstart', resumeGoalVideo);
+  };
+
+  document.addEventListener('pointerdown', resumeGoalVideo, { once: true });
+  document.addEventListener('touchstart', resumeGoalVideo, { once: true });
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible') startGoalVideo();
+  });
+}
+
 /* ── TYPED HERO ── */
 const words=['FRONT-END DEVELOPER','IT STUDENT','GAMER','CREATIVE BUILDER','ALWAYS LEARNING'];
 let wi=0,ci=0,del=false;
