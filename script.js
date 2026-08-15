@@ -59,55 +59,70 @@ window.addEventListener('scroll',()=>{
 
 /* ── CINEMATIC VIDEO ── */
 const cinematicVideo=document.querySelector('.cinematic-video');
+const goalVideo=document.querySelector('.goal-video');
+const isMobileView=()=>window.matchMedia('(max-width:700px)').matches;
+
+function resumeMutedLoop(video){
+  if(!video) return;
+  video.muted=true;
+  video.loop=true;
+  video.setAttribute('playsinline','true');
+  video.setAttribute('webkit-playsinline','true');
+  if(document.visibilityState==='visible'){
+    video.play().catch(()=>{});
+  }
+}
+
 if(cinematicVideo){
-  const vidObs=new IntersectionObserver(e=>{
-    e.forEach(i=>{
-      if(i.isIntersecting){cinematicVideo.play().catch(()=>{});}
-      else{cinematicVideo.pause();}
-    });
-  },{threshold:0.25});
-  vidObs.observe(cinematicVideo);
+  if(isMobileView()){
+    resumeMutedLoop(cinematicVideo);
+  } else {
+    const vidObs=new IntersectionObserver(e=>{
+      e.forEach(i=>{
+        if(i.isIntersecting){cinematicVideo.play().catch(()=>{});}
+        else{cinematicVideo.pause();}
+      });
+    },{threshold:0.25});
+    vidObs.observe(cinematicVideo);
+  }
+
+  cinematicVideo.addEventListener('ended',()=>{
+    cinematicVideo.currentTime=0;
+    resumeMutedLoop(cinematicVideo);
+  });
+
+  cinematicVideo.addEventListener('pause',()=>{
+    if(document.visibilityState==='visible') resumeMutedLoop(cinematicVideo);
+  });
 }
 
 /* ── MISSION VIDEO LOOP (mobile-safe) ── */
-const goalVideo=document.querySelector('.goal-video');
 if(goalVideo){
-  goalVideo.muted=true;
-  goalVideo.loop=true;
-  goalVideo.setAttribute('playsinline','true');
-  goalVideo.setAttribute('webkit-playsinline','true');
-
-  const startGoalVideo=()=>{
-    goalVideo.muted=true;
-    goalVideo.loop=true;
-    goalVideo.play().catch(()=>{});
-  };
+  resumeMutedLoop(goalVideo);
 
   goalVideo.addEventListener('ended',()=>{
     goalVideo.currentTime=0;
-    startGoalVideo();
+    resumeMutedLoop(goalVideo);
   });
 
   goalVideo.addEventListener('pause',()=>{
-    if(document.visibilityState==='visible') startGoalVideo();
+    if(document.visibilityState==='visible') resumeMutedLoop(goalVideo);
   });
 
-  ['loadeddata','canplay','loadedmetadata'].forEach(ev=>{
-    goalVideo.addEventListener(ev, startGoalVideo, { once: true });
-  });
-
-  const resumeGoalVideo=()=>{
-    startGoalVideo();
-    document.removeEventListener('pointerdown', resumeGoalVideo);
-    document.removeEventListener('touchstart', resumeGoalVideo);
-  };
-
-  document.addEventListener('pointerdown', resumeGoalVideo, { once: true });
-  document.addEventListener('touchstart', resumeGoalVideo, { once: true });
   document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='visible') startGoalVideo();
+    if(document.visibilityState==='visible'){
+      resumeMutedLoop(goalVideo);
+      if(cinematicVideo) resumeMutedLoop(cinematicVideo);
+    }
   });
 }
+
+setInterval(()=>{
+  if(document.visibilityState==='visible'){
+    if(cinematicVideo && cinematicVideo.paused) resumeMutedLoop(cinematicVideo);
+    if(goalVideo && goalVideo.paused) resumeMutedLoop(goalVideo);
+  }
+}, 1200);
 
 /* ── TYPED HERO ── */
 const words=['FRONT-END DEVELOPER','IT STUDENT','GAMER','CREATIVE BUILDER','ALWAYS LEARNING'];
