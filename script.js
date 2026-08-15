@@ -62,7 +62,7 @@ const cinematicVideo=document.querySelector('.cinematic-video');
 const goalVideo=document.querySelector('.goal-video');
 
 function setupBackgroundVideo(video){
-  if(!video) return;
+  if(!video || !(video instanceof HTMLVideoElement)) return;
 
   video.muted=true;
   video.loop=true;
