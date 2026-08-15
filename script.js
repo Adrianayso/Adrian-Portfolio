@@ -57,72 +57,47 @@ window.addEventListener('scroll',()=>{
   if(pct>98)unlock('[OK]','Completionist');
 });
 
-/* ── CINEMATIC VIDEO ── */
+/* ── VIDEO BACKGROUNDS ── */
 const cinematicVideo=document.querySelector('.cinematic-video');
 const goalVideo=document.querySelector('.goal-video');
-const isMobileView=()=>window.matchMedia('(max-width:700px)').matches;
 
-function resumeMutedLoop(video){
+function setupBackgroundVideo(video){
   if(!video) return;
+
   video.muted=true;
   video.loop=true;
   video.setAttribute('playsinline','true');
   video.setAttribute('webkit-playsinline','true');
-  if(document.visibilityState==='visible'){
+  video.preload='auto';
+
+  function start(){
+    video.muted=true;
+    video.loop=true;
     video.play().catch(()=>{});
   }
-}
 
-if(cinematicVideo){
-  if(isMobileView()){
-    resumeMutedLoop(cinematicVideo);
-  } else {
-    const vidObs=new IntersectionObserver(e=>{
-      e.forEach(i=>{
-        if(i.isIntersecting){cinematicVideo.play().catch(()=>{});}
-        else{cinematicVideo.pause();}
-      });
-    },{threshold:0.25});
-    vidObs.observe(cinematicVideo);
-  }
-
-  cinematicVideo.addEventListener('ended',()=>{
-    cinematicVideo.currentTime=0;
-    resumeMutedLoop(cinematicVideo);
+  video.addEventListener('ended',()=>{
+    video.currentTime=0;
+    start();
   });
 
-  cinematicVideo.addEventListener('pause',()=>{
-    if(document.visibilityState==='visible') resumeMutedLoop(cinematicVideo);
-  });
-}
-
-/* ── MISSION VIDEO LOOP (mobile-safe) ── */
-if(goalVideo){
-  resumeMutedLoop(goalVideo);
-
-  goalVideo.addEventListener('ended',()=>{
-    goalVideo.currentTime=0;
-    resumeMutedLoop(goalVideo);
+  video.addEventListener('pause',()=>{
+    if(document.visibilityState==='visible') start();
   });
 
-  goalVideo.addEventListener('pause',()=>{
-    if(document.visibilityState==='visible') resumeMutedLoop(goalVideo);
-  });
-
+  const resumeOnGesture=()=>{ start(); };
+  document.addEventListener('touchstart', resumeOnGesture, { passive: true, once: true });
+  document.addEventListener('pointerdown', resumeOnGesture, { passive: true, once: true });
+  document.addEventListener('click', resumeOnGesture, { passive: true, once: true });
   document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='visible'){
-      resumeMutedLoop(goalVideo);
-      if(cinematicVideo) resumeMutedLoop(cinematicVideo);
-    }
+    if(document.visibilityState==='visible') start();
   });
+
+  start();
 }
 
-setInterval(()=>{
-  if(document.visibilityState==='visible'){
-    if(cinematicVideo && cinematicVideo.paused) resumeMutedLoop(cinematicVideo);
-    if(goalVideo && goalVideo.paused) resumeMutedLoop(goalVideo);
-  }
-}, 1200);
+if(cinematicVideo){setupBackgroundVideo(cinematicVideo);}
+if(goalVideo){setupBackgroundVideo(goalVideo);}
 
 /* ── TYPED HERO ── */
 const words=['FRONT-END DEVELOPER','IT STUDENT','GAMER','CREATIVE BUILDER','ALWAYS LEARNING'];
