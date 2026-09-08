@@ -5,7 +5,7 @@
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 2px);pointer-events:none;z-index:9000;mix-blend-mode:screen;}
 /* CRT flicker */
 @keyframes flicker{0%,100%{opacity:1;}92%{opacity:1;}93%{opacity:0.96;}94%{opacity:1;}96%{opacity:0.98;}}
-html{animation:flicker 6s infinite;}
+html{animation:flicker 6s infinite;scroll-behavior:smooth;}
 
 body{font-family:'VT323',monospace;background:#000;color:var(--green);overflow-x:hidden;position:relative;}
 
@@ -194,6 +194,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:5000;background:rgba(0,0,0,0.18)
 .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 @media(max-width:600px){.proj-grid{grid-template-columns:1fr;}}
 .proj-card{background:#000;border:2px solid var(--border);padding:1.5rem;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.proj-card.unavailable{opacity:0.72;filter:grayscale(0.9);cursor:not-allowed;border-color:rgba(255,255,255,0.08);}
+.proj-card.unavailable::before{background:var(--darkgreen);width:100%;}
+.proj-card.unavailable .proj-status,.proj-card.unavailable .proj-arrow,.proj-card.unavailable .proj-title{color:var(--darkgreen);text-shadow:none;}
 .proj-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--green);transition:width 0.4s;}
 .proj-card:hover::before{width:100%;}
 .proj-card:hover{border-color:var(--green);box-shadow:0 0 20px rgba(255,255,255,0.15);transform:translateY(-4px);}
@@ -271,9 +274,15 @@ footer span{color:var(--green);}
   .hero-left{display:flex;flex-direction:column;gap:0;}
   .hero-top{font-size:6px;word-break:break-all;margin-bottom:1rem;line-height:1.8;}
 
-  /* Photo goes small, floats right beside the name */
-  .hero-photo-col{order:-1;position:absolute;top:7.5rem;right:1.5rem;width:130px;height:160px;z-index:5;}
-  .hero-photo-img{width:130px;height:160px;object-fit:cover;object-position:top;border:none;box-shadow:none;}
+  /* Hide the floating pixel decorations on phone — they were overlapping the photo */
+  .pixel-deco{display:none;}
+
+  /* Shrink the big rotated "boom" background design on phone so it doesn't dominate the screen */
+  .footer-boom-design{width:120px;height:120px;left:1rem;bottom:4rem;}
+
+  /* Photo goes small, floats right beside the name — lined up with the top of "ADRIAN AYSO" so it doesn't hang down over the build info below */
+  .hero-photo-col{order:-1;position:absolute;top:6.7rem;right:1.5rem;width:110px;height:150px;z-index:5;}
+  .hero-photo-img{width:100%;height:100%;object-fit:contain;object-position:top center;border:none;box-shadow:none;filter:grayscale(0.7) contrast(1.1) brightness(0.9);mix-blend-mode:normal;opacity:0.9;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);}
 
   /* Push h1 to leave room for floated photo */
   .hero h1{font-size:22px;max-width:55%;margin-bottom:0.5rem;}
@@ -305,6 +314,6 @@ footer span{color:var(--green);}
   .int-grid{grid-template-columns:1fr!important;}
   .movie-card{flex:0 1 100%!important;}
   .hero h1{font-size:18px;}
-  .hero-photo-col{width:110px;height:135px;}
-  .hero-photo-img{width:110px;height:135px;}
+  .hero-photo-col{top:6.2rem;width:90px;height:125px;}
+  .hero-photo-img{width:90px;height:125px;filter:grayscale(0.7) contrast(1.1) brightness(0.9);mix-blend-mode:normal;opacity:0.9;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);}
 }

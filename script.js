@@ -1,15 +1,31 @@
 /* ── MATRIX RAIN (full page background) ── */
 const mc=document.getElementById('matrixCanvas');
-mc.width=window.innerWidth;mc.height=window.innerHeight;
-window.addEventListener('resize',()=>{mc.width=window.innerWidth;mc.height=window.innerHeight;});
 const ctx2=mc.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+
+function resizeMatrixCanvas(){
+  const w = document.documentElement.clientWidth;
+  const h = document.documentElement.clientHeight;
+  mc.style.width = w + 'px';
+  mc.style.height = h + 'px';
+  mc.width = w * dpr;
+  mc.height = h * dpr;
+  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resizeMatrixCanvas();
+window.addEventListener('resize', ()=>{ resizeMatrixCanvas(); particles.forEach(p=>{ p.x = Math.random()*canvasW(); }); });
+window.addEventListener('orientationchange', resizeMatrixCanvas);
+window.addEventListener('load', resizeMatrixCanvas);
+
+function canvasW(){ return mc.width / dpr; }
+function canvasH(){ return mc.height / dpr; }
 
 const PARTICLE_COUNT = 280;
 const particles = [];
 function mkParticle(x){
   return {
-    x: x !== undefined ? x : Math.random()*mc.width,
-    y: Math.random()*mc.height,
+    x: x !== undefined ? x : Math.random()*canvasW(),
+    y: Math.random()*canvasH(),
     speed: 0.4 + Math.random()*2.2,
     fontSize: 9 + Math.floor(Math.random()*10),
     opacity: 0.2 + Math.random()*0.8,
@@ -22,7 +38,7 @@ function mkParticle(x){
 for(let i=0;i<PARTICLE_COUNT;i++) particles.push(mkParticle());
 
 function drawMatrix(){
-  ctx2.clearRect(0,0,mc.width,mc.height);
+  ctx2.clearRect(0,0,canvasW(),canvasH());
   particles.forEach(p=>{
     p.timer--;
     if(p.timer<=0){
@@ -37,9 +53,9 @@ function drawMatrix(){
     ctx2.globalAlpha = 1;
     p.y += p.speed;
     p.x += p.drift;
-    if(p.y > mc.height + 20){
+    if(p.y > canvasH() + 20){
       p.y = -20;
-      p.x = Math.random()*mc.width;
+      p.x = Math.random()*canvasW();
       p.speed = 0.4 + Math.random()*2.2;
       p.opacity = 0.2 + Math.random()*0.8;
       p.drift = (Math.random()-0.5)*0.3;
