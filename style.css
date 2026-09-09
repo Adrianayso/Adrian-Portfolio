@@ -282,7 +282,7 @@ footer span{color:var(--green);}
 
   /* Photo goes small, floats right beside the name — lined up with the top of "ADRIAN AYSO" so it doesn't hang down over the build info below */
   .hero-photo-col{order:-1;position:absolute;top:6.7rem;right:1.5rem;width:110px;height:150px;z-index:5;}
-  .hero-photo-img{width:100%;height:100%;object-fit:contain;object-position:top center;border:none;box-shadow:none;filter:grayscale(0.7) contrast(1.1) brightness(0.9);mix-blend-mode:normal;opacity:0.9;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);}
+  .hero-photo-img{width:100%;height:100%;object-fit:contain;object-position:top center;border:none;box-shadow:none;filter:grayscale(0.6) contrast(1.5) brightness(0.4);mix-blend-mode:screen;opacity:1;-webkit-mask-image:radial-gradient(ellipse 42% 48% at 50% 35%,black 15%,transparent 62%);mask-image:radial-gradient(ellipse 42% 48% at 50% 35%,black 15%,transparent 62%);}
 
   /* Push h1 to leave room for floated photo */
   .hero h1{font-size:22px;max-width:55%;margin-bottom:0.5rem;}
@@ -315,5 +315,5 @@ footer span{color:var(--green);}
   .movie-card{flex:0 1 100%!important;}
   .hero h1{font-size:18px;}
   .hero-photo-col{top:6.2rem;width:90px;height:125px;}
-  .hero-photo-img{width:90px;height:125px;filter:grayscale(0.7) contrast(1.1) brightness(0.9);mix-blend-mode:normal;opacity:0.9;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);mask-image:radial-gradient(ellipse 70% 75% at 50% 40%,black 55%,transparent 92%);}
+  .hero-photo-img{width:90px;height:125px;filter:grayscale(0.6) contrast(1.5) brightness(0.4);mix-blend-mode:screen;opacity:1;-webkit-mask-image:radial-gradient(ellipse 42% 48% at 50% 35%,black 15%,transparent 62%);mask-image:radial-gradient(ellipse 42% 48% at 50% 35%,black 15%,transparent 62%);}
 }
